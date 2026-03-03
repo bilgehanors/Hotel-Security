@@ -4,7 +4,7 @@ from google import genai
 import re
 
 # 1. Google Gemma API Yapılandırması
-API_KEY = "AIzaSyDe32ggF_e6p_CimyhLlhooZtbN4T73U7Q"
+API_KEY = "API_KEY"
 
 client = genai.Client(api_key=API_KEY)
 MODEL_NAME = 'gemma-3-27b-it'  # Gemma 3 27B Instruct model
