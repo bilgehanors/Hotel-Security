@@ -1,0 +1,50 @@
+###############################################################################
+#             NMAP OTEL GÜVENLİK VE KAMERA TESPİT REHBERİ (macOS)             #
+###############################################################################
+
+1. AĞ GEÇİDİNİ (ROUTER) BULMA
+-------------------------------------------------------------------------------
+Komut: netstat -nr | grep default
+Açıklama: Çıktıdaki 'default' satırının yanındaki IP (Örn: 192.168.1.1) senin 
+router adresindir. Tarama yaparken bu IP'nin sonunu sıfırlayıp '/24' ekleyerek 
+tüm ağı hedeflersin (Örn: 192.168.1.0/24).
+
+2. HIZLI KEŞİF (AĞDA KİMLER VAR?)
+-------------------------------------------------------------------------------
+Komut: sudo nmap -sn -n [Ağ-Aralığı]
+Açıklama: 
+-sn: Port taraması yapmaz, sadece cihazların açık olup olmadığını kontrol eder.
+-n: DNS çözümlemesini kapatır, taramayı oldukça hızlandırır.
+
+3. KİMLİK TESPİTİ (MARKA VE ÜRETİCİ BİLGİSİ)
+-------------------------------------------------------------------------------
+Komut: sudo nmap -sP [Ağ-Aralığı]
+Açıklama: Cihazların MAC adreslerini okuyarak hangi markaya (Apple, Hikvision, 
+Xiaomi vb.) ait olduğunu gösterir. Kamera üreticilerini yakalamak için en kritik adımdır.
+
+4. HEDEF ODAKLI KAMERA TARAMASI (PORT VE SERVİS)
+-------------------------------------------------------------------------------
+Komut: sudo nmap -p 80,443,554,1935,8000,8080,37777 --script http-title [Hedef-IP]
+Açıklama:
+-p: Kameraların en sık kullandığı portları (RTSP, HTTP, ONVIF) tarar.
+--script http-title: Cihazın web arayüzü başlığını çeker. "IP Camera Login" gibi 
+ibareler burada görünür.
+
+5. FİLTRELERİ ATLATMA (AGRESİF TARAMA)
+-------------------------------------------------------------------------------
+Komut: sudo nmap -Pn -f [Hedef-IP]
+Açıklama:
+-Pn: Ping paketlerini engelleyen cihazları "açıkmış gibi" kabul edip tarar.
+-f: Paketleri parçalayarak gönderir, basit güvenlik duvarlarını atlatabilir.
+
+6. SERVİS VE İŞLETİM SİSTEMİ ANALİZİ
+-------------------------------------------------------------------------------
+Komut: sudo nmap -sV -O --osscan-guess [Hedef-IP]
+Açıklama: Cihazın hangi işletim sistemini ve servis versiyonlarını (Linux, 
+Android, özel kamera yazılımı vb.) kullandığını tahmin etmeye çalışır.
+
+###############################################################################
+# NOT: Otellerdeki "Client Isolation" engelini aşmak için mümkünse odadaki    #
+# Ethernet kablosu üzerinden bağlanmayı dene. Kablolu bağlantılar genelde     #
+# daha fazla cihaz görmeni sağlar.                                            #
+###############################################################################
